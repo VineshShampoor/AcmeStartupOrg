@@ -6,10 +6,10 @@ import getRelatedAccounts from '@salesforce/apex/AcquireBankOrgToken.getRelatedA
 import refreshRelatedAccounts from '@salesforce/apex/AcquireBankOrgToken.refreshRelatedAccounts';
 import { getRecord } from "lightning/uiRecordApi";
 
-const FIELDS = ['Account.Id', 'Account.Name', 'Account.Website'];
+const FIELDS = ['Account.Id', 'Account.Name', 'Account.Website', 'Account.NameWebsiteCombination__c'];
 
 const columns = [
-   
+
     {
         label: 'Record Id',
         //initialWidth: 1000,
@@ -73,17 +73,24 @@ export default class RelatedListAccount extends NavigationMixin(
         this.fetchRelatedAccounts();
     }
 
+    @track isrefreshed = false;
+
     refreshAction() {
 
         console.log('This.accountRecord.Name.value ' + this.accountRecord.fields.Name.value + '@@ ' + this.accountRecord.fields.Website.value);
 
 
         this.showspinner = true;
-        refreshRelatedAccounts({ name: this.accountRecord.fields.Name.value, website: this.accountRecord.fields.Website.value })
+        refreshRelatedAccounts({
+            name: this.accountRecord.fields.Name.value,
+            website: this.accountRecord.fields.Website.value,
+            nameWebsiteCombo: this.accountRecord.fields.NameWebsiteCombination__c.value
+        })
             .then((result) => {
 
                 //this.accounts = JSON.parse(JSON.stringify(result));
                 this.fetchRelatedAccounts();
+                this.isrefreshed = true;
                 this.showspinner = false;
                 console.log("Result" + JSON.stringify(result) + '\nthis.showspinner ' + this.showspinner);
             })
@@ -102,11 +109,23 @@ export default class RelatedListAccount extends NavigationMixin(
                 window.console.log("fetch " + JSON.stringify(result));
                 this.accounts = JSON.parse(JSON.stringify(result));
 
-                for(let i=0;i<this.accounts.length;i++){
-                    this.accounts[i].urlid='/lightning/r/Account/'+this.accounts[i].Id+'/view';
+                for (let i = 0; i < this.accounts.length; i++) {
+                    this.accounts[i].urlid = '/lightning/r/Account/' + this.accounts[i].Id + '/view';
 
                 }
                 this.relatedcount = this.accounts.length;
+
+                if (this.isrefreshed === true) {
+                    this.dispatchEvent(
+                        new ShowToastEvent({
+                            title: 'Success',
+                            message: 'Related Accounts refreshed successfully',
+                            variant: 'success'
+                        })
+                    );
+                    this.isrefreshed = false;
+                }
+
 
                 this.showspinner = false;
             })

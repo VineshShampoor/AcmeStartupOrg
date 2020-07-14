@@ -110,14 +110,14 @@ global class AcquireBankOrgToken {
     }
     
     @AuraEnabled
-    public static void refreshRelatedAccounts(String name, String website){
+    public static void refreshRelatedAccounts(String name, String website, String nameWebsiteCombo){
         String reqbody='{"inputlist":[';
         
         Set<String> nameweb = new Set<String>();
         
         Set<Id> allInsertedIds = new Set<Id>();
         
-        reqbody = reqbody + '{"Id":"'+name+website+'",';
+        reqbody = reqbody + '{"Id":"'+nameWebsiteCombo+'",';
         reqbody = reqbody + '"Name":"'+name+'",';
         reqbody = reqbody + '"Website":"'+website+'"}';
         

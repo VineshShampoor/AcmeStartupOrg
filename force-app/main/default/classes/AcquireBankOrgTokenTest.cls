@@ -73,7 +73,7 @@ public class AcquireBankOrgTokenTest {
             String response='[{"lst":[{"attributes":{"type":"Account","url":"/services/data/v48.0/sobjects/Account/0012w00000FbDi0AAF"},"Id":"0012w00000FbDi0AAF","Name":"ind","Website":"ind.com"}],"Id":"indind"}]';
             Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator(string.valueOf(response)));
             
-            AcquireBankOrgToken.refreshRelatedAccounts('testname', 'testwebsite');
+            AcquireBankOrgToken.refreshRelatedAccounts('testname', 'testwebsite', 'testcombo');
             
             Test.stopTest();
         }

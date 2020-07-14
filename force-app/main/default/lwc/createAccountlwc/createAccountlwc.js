@@ -38,12 +38,12 @@ export default class CreateRecord extends LightningElement {
     
     handleNameChange(event) {
         this.accountId = undefined;
-        this.name = event.target.value;
+        this.name = event.target.value.trim();
         this.setlabelsearch();
         
     }
     handleSiteChange(event) {
-        this.site = event.target.value;
+        this.site = event.target.value.trim();
         this.setlabelsearch();
     }
 
