@@ -1,0 +1,35 @@
+<template>
+    <article class="slds-card slds-card_boundary">
+        <div class="slds-card__header slds-grid slds-page-header">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate slds-var-p-bottom_medium">
+                <div class="slds-media__figure">
+                    <lightning-icon class="" icon-name="standard:account" size="small"
+                        alternative-text="Article Related Links"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Accounts">
+                            <span>Related Accounts from Org1 ({relatedcount})</span>
+                        </a>
+                    </h2>
+                </div>
+                <div class="slds-no-flex">
+                    <!-- <lightning-button title="Refresh" onclick={onClickRefresh} label="Refresh"
+                        alternative-text="Refresh"></lightning-button> -->
+
+                        <lightning-button label="Refresh" variant="brand" onclick={refreshAction}>
+                        </lightning-button>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <template if:true={showspinner}>
+                <lightning-spinner alternative-text="Loading" variant="brand" size="medium"></lightning-spinner>
+            </template>
+            <template if:true={accounts}>
+                <lightning-datatable data={accounts} columns={columns} key-field="Account_Id__c" hide-checkbox-column> 
+                </lightning-datatable>
+            </template>
+        </div>
+    </article>
+</template>
