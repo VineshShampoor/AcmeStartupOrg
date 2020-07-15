@@ -22,7 +22,14 @@ public class AcquireBankOrgTokenTest {
                             username='nikeel@testorg.com',
                             Department='CS-testuser');
         
-        insert usr;      
+        insert usr;  
+         
+         String response='[{"lst":[{"attributes":{"type":"Account","url":"/services/data/v48.0/sobjects/Account/0012w00000FbDi0AAF"},"Id":"0012w00000FbDi0AAF","Name":"ind","Website":"ind.com"}],"Id":"ind@@@ind"}]';
+         Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator(string.valueOf(response)));
+         
+         Account testacc1 = new Account(Name = 'ind', Website = 'www.ind.ind');
+         insert testacc1;
+         
     }
     
     @isTest static void testFetchToken() {
@@ -34,9 +41,12 @@ public class AcquireBankOrgTokenTest {
             // Perform test
             Test.startTest();
             
-            String response='{ "@odata.context": "https://graph.microsoft.com/beta/$metadata#teams(\'123456-1234-1234-1234-123456789123\')/channels(\'19%123456789012345678901236%40thread.skype\')/messages/$entity", "id": "id-value", "replyToId": null, "etag": "id-value", "messageType": "message", "createdDateTime": "2019-02-04T19:58:15.511Z", "lastModifiedDateTime": null, "deleted": false, "subject": null, "summary": null, "importance": "normal", "locale": "en-us", "policyViolation": null, "from": { "application": null, "device": null, "conversation": null, "user": { "id": "id-value", "displayName": "Joh Doe", "userIdentityType": "aadUser" } }, "body": { "contentType": "html", "content": "Hello World" }, "attachments": [], "mentions": [], "reactions": [] }';
+            String response='{ "access_token": "test_token" }';
             Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator(string.valueOf(response)));
-            AcquireBankOrgToken.getAccessToken();
+            String token = AcquireBankOrgToken.getAccessToken();
+            
+            //Assert: check if above token is parsed successfully
+            System.assert(token == 'test_token');
             
             Test.stopTest();
         }
@@ -54,7 +64,10 @@ public class AcquireBankOrgTokenTest {
             
             String response='[{"attributes":{"type":"Account","url":"/services/data/v48.0/sobjects/Account/0012w00000FbDi0AAF"},"Id":"0012w00000FbDi0AAF","Name":"ind","Website":"ind.com"}]';
             Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator(string.valueOf(response)));
-            AcquireBankOrgToken.getAccountsAura('testname','testwebsite');
+            AcquireBankOrgToken.RelatedAccountList rellist = AcquireBankOrgToken.getAccountsAura('testname','testwebsite');
+            
+            // check if number of results = 1, as per above mock response
+            System.assert(rellist.lst.size() == 1);
             
             Test.stopTest();
         }
@@ -70,12 +83,18 @@ public class AcquireBankOrgTokenTest {
             Test.startTest(); 
             
             AcquireBankOrgToken.getRelatedAccounts('invalid_id');
-            String response='[{"lst":[{"attributes":{"type":"Account","url":"/services/data/v48.0/sobjects/Account/0012w00000FbDi0AAF"},"Id":"0012w00000FbDi0AAF","Name":"ind","Website":"ind.com"}],"Id":"indind"}]';
+            String response='[{"lst":[{"attributes":{"type":"Account","url":"/services/data/v48.0/sobjects/Account/0012w00000FbDi0AAF"},"Id":"0012w00000FbDi0AAF","Name":"ind","Website":"ind.com"}],"Id":"ind@@@ind"}]';
             Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator(string.valueOf(response)));
             
             AcquireBankOrgToken.refreshRelatedAccounts('testname', 'testwebsite', 'testcombo');
             
+            Integer count = [Select count() from Related_Account_from_Org1__c where Account_Website__c = 'ind.com'];
+            System.debug('count '+count);
+            System.assert( count == 1);
+            
             Test.stopTest();
+            
+            
         }
     }
 }

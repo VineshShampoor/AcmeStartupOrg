@@ -30,16 +30,27 @@ public class TriggerHandlerTest {
             // Perform test
             Test.startTest();
             
-            String response='[{"lst":[{"attributes":{"type":"Account","url":"/services/data/v48.0/sobjects/Account/0012w00000FbDi0AAF"},"Id":"0012w00000FbDi0AAF","Name":"ind","Website":"ind.com"}],"Id":"indind"}]';
+            String response='[{"lst":[{"attributes":{"type":"Account","url":"/services/data/v48.0/sobjects/Account/0012w00000FbDi0AAF"},"Id":"0012w00000FbDi0AAF","Name":"ind","Website":"ind.com"}],"Id":"ind@@@ind"}]';
             Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator(string.valueOf(response)));
             
-            Account testacc1 = new Account(Name = 'ind', Website = 'ind');
+            Account testacc1 = new Account(Name = 'ind', Website = 'www.ind.ind');
             insert testacc1;
             
-            Account testacc2 = new Account(Name = 'testName', Website = 'testWebsite');
+            Account testacc2 = new Account(Name = 'ind', Website = 'www.ind.com');
             insert testacc2;
             
+            Account testacc3 = new Account(Name = 'testName', Website = 'testWebsite');
+            insert testacc3;
+            
+            //System.assert( count > 0);
+            
             Test.stopTest();
+            
+            // Assering Here because below is execute after asynchronous future callouts;
+            // Assert Related Records are inserted for account1
+            Integer count = [Select count() from Related_Account_from_Org1__c where Account__c = :testacc1.Id];
+            System.debug('count '+count);
+            System.assert( count == 1);
         }
     }
     

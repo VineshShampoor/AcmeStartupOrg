@@ -52,6 +52,7 @@ global without sharing class TriggerHandler {
         // Populate map
         for(Output ot:lst.outputlist){
             mp.put(ot.Id, ot.lst);
+            System.debug('Id '+ot.Id);
         }
         
         // Get Accounts in org 2 to update Related Accounts from Bank Org
