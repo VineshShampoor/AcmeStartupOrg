@@ -15,13 +15,26 @@
                 </lightning-layout-item>
                 <lightning-layout-item size="6" padding="around-small">
                     <div class="custom-box ">
-                        <lightning-input label="Name" onchange={handleNameChange} class="slds-m-bottom_x-small">
+                        <lightning-input label="Account Name" onchange={handleNameChange} value={name} onblur={handlenameclassvalidations}
+                            required class="nameclass slds-m-bottom_x-small">
                         </lightning-input>
                     </div>
                 </lightning-layout-item>
                 <lightning-layout-item size="6" padding="around-small">
                     <div class="custom-box ">
                         <lightning-input label="Website" onchange={handleSiteChange} class="slds-m-bottom_x-small">
+                        </lightning-input>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" padding="around-small">
+                    <div class="custom-box ">
+                        <lightning-input label="Phone" onchange={handlePhoneChane} class="slds-m-bottom_x-small">
+                        </lightning-input>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" padding="around-small">
+                    <div class="custom-box ">
+                        <lightning-input label="Fax" onchange={handleFaxChange} class="slds-m-bottom_x-small">
                         </lightning-input>
                     </div>
                 </lightning-layout-item>

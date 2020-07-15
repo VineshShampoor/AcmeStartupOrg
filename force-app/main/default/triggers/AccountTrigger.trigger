@@ -15,12 +15,12 @@ trigger AccountTrigger on Account (after insert) {
         }
         reqbody = reqbody + '{"Id":"'+q.NameWebsiteCombination__c.toLowerCase()+'",';
         reqbody = reqbody + '"Name":"'+q.Name+'",';
-        reqbody = reqbody + '"Website":"'+q.Website+'"}';
+        reqbody = reqbody + '"Website":"'+q.Website+'"},';
         
         nameweb.add(q.Name+q.Website);
     } 
     
-    reqbody = reqbody+']}';
+    reqbody = reqbody.removeEnd(',')+']}';
     
     // Handler Purpose: Making bulk rest call(in future method)
     TriggerHandler.getAccountsList(reqbody, allInsertedIds);

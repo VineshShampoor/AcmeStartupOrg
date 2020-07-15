@@ -5,6 +5,8 @@ import { NavigationMixin } from 'lightning/navigation';
 import ACCOUNT_OBJECT from '@salesforce/schema/Account';
 import NAME_FIELD from '@salesforce/schema/Account.Name';
 import SITE_FIELD from '@salesforce/schema/Account.Website';
+import PHONE_FIELD from '@salesforce/schema/Account.Phone';
+import FAX_FIELD from '@salesforce/schema/Account.Fax';
 
 import getAccountsAura from '@salesforce/apex/AcquireBankOrgToken.getAccountsAura';
 
@@ -28,13 +30,15 @@ export default class CreateRecord extends NavigationMixin(LightningElement) {
 
 
     @track accountId;
-    name = '';
+    @track name = '';
     site = '';
+    phone = '';
+    fax = '';
 
-    @track labelcreate = 'Search Account';
+    @track labelcreate = 'Search Banking Org';
 
     setlabelsearch() {
-        this.labelcreate = 'Search Account';
+        this.labelcreate = 'Search Banking Org';
     }
 
     handleNameChange(event) {
@@ -45,6 +49,16 @@ export default class CreateRecord extends NavigationMixin(LightningElement) {
     }
     handleSiteChange(event) {
         this.site = event.target.value.trim();
+        this.setlabelsearch();
+    }
+
+    handlePhoneChane(event) {
+        this.phone = event.target.value.trim();
+        this.setlabelsearch();
+    }
+
+    handleFaxChange(event) {
+        this.fax = event.target.value.trim();
         this.setlabelsearch();
     }
 
@@ -71,11 +85,32 @@ export default class CreateRecord extends NavigationMixin(LightningElement) {
     searchrecords() {
         this.showspinner = true;
 
+        const allValid = [...this.template.querySelectorAll('lightning-input')]
+            .reduce((validSoFar, inputCmp) => {
+                inputCmp.reportValidity();
+                return validSoFar && inputCmp.checkValidity();
+            }, true);
+
+        if (allValid === false) {
+            this.showspinner = false;
+            this.navigateid = undefined;
+            this.accountId = undefined;
+            
+            return;
+        }
+
         if (this.labelcreate === 'Create Account' || this.labelcreate === 'Create Account Anyway') {
             this.createAccount();
             return;
         }
 
+        if(this.site.trim() === ''){
+            this.searchedonce = true;
+            this.labelcreate = 'Create Account';
+            this.tableSearchedData = [];
+            this.showspinner = false;
+            return;
+        }
 
         getAccountsAura({
             name: this.name,
@@ -90,7 +125,7 @@ export default class CreateRecord extends NavigationMixin(LightningElement) {
                 this.showspinner = false;
                 let temp = JSON.parse(JSON.stringify(result));
                 this.tableSearchedData = temp.lst;
-                this.navigateid = null;
+                this.navigateid = undefined;
 
                 if (this.tableSearchedData.length > 0) {
                     this.labelcreate = 'Create Account Anyway';
@@ -121,6 +156,8 @@ export default class CreateRecord extends NavigationMixin(LightningElement) {
         const fields = {};
         fields[NAME_FIELD.fieldApiName] = this.name;
         fields[SITE_FIELD.fieldApiName] = this.site;
+        fields[PHONE_FIELD.fieldApiName] = this.phone;
+        fields[FAX_FIELD.fieldApiName] = this.fax;
         const recordInput = { apiName: ACCOUNT_OBJECT.objectApiName, fields };
 
         createRecord(recordInput)
@@ -373,6 +410,23 @@ export default class CreateRecord extends NavigationMixin(LightningElement) {
             },
         });*/
 
-        window.open('/lightning/r/Account/'+this.navigateid+'/view', "_blank");
+        window.open('/lightning/r/Account/' + this.navigateid + '/view', "_blank");
+    }
+
+    handlenameclassvalidations(event) {
+
+        let inputValue = event.target.value;
+        let nameclass = this.template.querySelector(".nameclass");
+
+        if ( inputValue === undefined || inputValue.trim() === '') {
+            nameclass.setCustomValidity("Account Name invalid");
+            nameclass.reportValidity();
+
+        } else {
+            //reset an error
+            nameclass.setCustomValidity('');
+            nameclass.reportValidity();
+
+        }
     }
 }

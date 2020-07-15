@@ -91,7 +91,6 @@ export default class RelatedListAccount extends NavigationMixin(
                 //this.accounts = JSON.parse(JSON.stringify(result));
                 this.fetchRelatedAccounts();
                 this.isrefreshed = true;
-                this.showspinner = false;
                 console.log("Result" + JSON.stringify(result) + '\nthis.showspinner ' + this.showspinner);
             })
         /* .catch((error) => {
