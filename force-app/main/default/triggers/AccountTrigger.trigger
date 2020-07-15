@@ -13,7 +13,7 @@ trigger AccountTrigger on Account (after insert) {
         if(nameweb.contains(q.Name+q.Website) || String.isBlank(q.Website)){
             continue;
         }
-        reqbody = reqbody + '{"Id":"'+q.NameWebsiteCombination__c+'",';
+        reqbody = reqbody + '{"Id":"'+q.NameWebsiteCombination__c.toLowerCase()+'",';
         reqbody = reqbody + '"Name":"'+q.Name+'",';
         reqbody = reqbody + '"Website":"'+q.Website+'"}';
         

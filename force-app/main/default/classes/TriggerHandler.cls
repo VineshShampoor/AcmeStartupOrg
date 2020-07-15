@@ -67,14 +67,17 @@ global without sharing class TriggerHandler {
             
         Related_Account_from_Org1__c temp;
         for(Account acc:accs){
-            for(Account at: mp.get(acc.NameWebsiteCombination__c)){
-                temp = new Related_Account_from_Org1__c();
-                temp.Account__c = acc.id;
-                 
-                temp.Account_Id__c = at.Id;
-                temp.Account_Name__c = at.Name;
-                temp.Account_Website__c = at.Website;
-                lsttoinsert.add(temp);
+            String tempstr = acc.NameWebsiteCombination__c.toLowerCase();
+            if(mp.containsKey(tempstr) && mp.get(tempstr)!=null ){
+                for(Account at: mp.get(acc.NameWebsiteCombination__c)){
+                    temp = new Related_Account_from_Org1__c();
+                    temp.Account__c = acc.id;
+                    
+                    temp.Account_Id__c = at.Id;
+                    temp.Account_Name__c = at.Name;
+                    temp.Account_Website__c = at.Website;
+                    lsttoinsert.add(temp);
+                }
             }
         }
         

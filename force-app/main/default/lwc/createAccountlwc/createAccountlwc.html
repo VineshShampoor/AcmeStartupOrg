@@ -31,61 +31,54 @@
                         </lightning-button>
                     </div>
                 </lightning-layout-item>
+                <template if:true={navigateid}>
+                    <lightning-layout-item size="12" padding="around-small">
+                        <div class="custom-box slds-align_absolute-center">
+                            <lightning-button label="Take Me to New Account" variant="Base" onclick={handleAccountView}>
+                            </lightning-button>
+                        </div>
+                    </lightning-layout-item>
+                </template>
             </lightning-layout>
         </div>
 
 
-         <div>
+        <div>
             <div class="slds-p-horizontal_small">
                 <template if:true={showsearchsection}>
-    
-                    <div class="slds-grid slds-wrap">
-                        <!-- <div class="slds-col slds-size_4-of-12">
 
-                        </div> -->
+                    <div class="slds-grid slds-wrap">
+
                         <div class="slds-col slds-size_12-of-12" data-id="scrolltoclass">
                             <div class="slds-align_absolute-center">
 
-                                <!-- <div class="slds-form-element">
-                                    <label class="slds-form-element__label" for="form-element-01">&nbsp;</label>
-                                    <div class="slds-form-element__control">
-                                        <lightning-button variant="brand" label="Attach" title="Attach"
-                                            disabled={disableattach} class="aa" onclick={handleAttachMultiple}>
-                                        </lightning-button>
-                                    </div>
-                                </div> -->
-                               
-    
                                 <div class="slds-form-element">
                                     <span style="font-size:15px"><b>Search Results:</b> Accounts from Banking Org</span>
                                 </div>
-    
-    
                             </div>
-    
+
                         </div>
                         <div class="slds-col slds-size_12-of-12 slds-p-around_x-small">
                             <div class="slds-float_right">
-                                
+
                                 <lightning-combobox name="blockSize" label="Records/Page" value={blockSize}
                                     placeholder="Select" options={blockoptions} onchange={handleBlockChange}>
                                 </lightning-combobox>
                             </div>
                         </div>
                     </div>
-    
-    
+
+
                     <lightning-datatable key-field="Id" data={tabledataui} columns={columns} hide-checkbox-column
-                        show-row-number-column row-number-offset={rowOffset}
-                        onrowaction={handleRowAction} sorted-by={sortBy} sorted-direction={sortDirection}
-                        onsort={handleSortdata} class="ltable">
+                        show-row-number-column row-number-offset={rowOffset} onrowaction={handleRowAction}
+                        sorted-by={sortBy} sorted-direction={sortDirection} onsort={handleSortdata} class="ltable">
                     </lightning-datatable>
-    
+
                     <div class="slds-p-top_medium">
                         <lightning-layout>
                             <lightning-layout-item>
-                                <lightning-button label="First" icon-name="utility:chevronleft" onclick={handlePageChange}
-                                    disabled={isFirstPage}>
+                                <lightning-button label="First" icon-name="utility:chevronleft"
+                                    onclick={handlePageChange} disabled={isFirstPage}>
                                 </lightning-button>
                             </lightning-layout-item>
                             <lightning-layout-item>
@@ -93,7 +86,7 @@
                                     onclick={handlePageChange} disabled={isFirstPage}>
                                 </lightning-button>
                             </lightning-layout-item>
-                            
+
                             <lightning-layout-item class="slds-align_absolute-center">
                                 <b>{stringPages}</b>
                             </lightning-layout-item>
@@ -110,7 +103,7 @@
                         </lightning-layout>
                     </div>
                 </template>
-    
+
                 <template if:true={shownosec}>
                     <div class="slds-p-around_large">
                         <center>

@@ -1,6 +1,7 @@
 import { LightningElement, track } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { createRecord } from 'lightning/uiRecordApi';
+import { NavigationMixin } from 'lightning/navigation';
 import ACCOUNT_OBJECT from '@salesforce/schema/Account';
 import NAME_FIELD from '@salesforce/schema/Account.Name';
 import SITE_FIELD from '@salesforce/schema/Account.Website';
@@ -23,7 +24,7 @@ const columns = [
 
 ];
 
-export default class CreateRecord extends LightningElement {
+export default class CreateRecord extends NavigationMixin(LightningElement) {
 
 
     @track accountId;
@@ -32,15 +33,15 @@ export default class CreateRecord extends LightningElement {
 
     @track labelcreate = 'Search Account';
 
-    setlabelsearch(){
+    setlabelsearch() {
         this.labelcreate = 'Search Account';
     }
-    
+
     handleNameChange(event) {
         this.accountId = undefined;
         this.name = event.target.value.trim();
         this.setlabelsearch();
-        
+
     }
     handleSiteChange(event) {
         this.site = event.target.value.trim();
@@ -65,14 +66,16 @@ export default class CreateRecord extends LightningElement {
 
     @track showspinner = false;
     @track searchedonce = false;
+    @track navigateid;
+
     searchrecords() {
         this.showspinner = true;
 
-        if(this.labelcreate === 'Create Account' || this.labelcreate === 'Create Account Anyway'){
+        if (this.labelcreate === 'Create Account' || this.labelcreate === 'Create Account Anyway') {
             this.createAccount();
             return;
         }
-        
+
 
         getAccountsAura({
             name: this.name,
@@ -87,10 +90,11 @@ export default class CreateRecord extends LightningElement {
                 this.showspinner = false;
                 let temp = JSON.parse(JSON.stringify(result));
                 this.tableSearchedData = temp.lst;
+                this.navigateid = null;
 
-                if(this.tableSearchedData.length > 0){
+                if (this.tableSearchedData.length > 0) {
                     this.labelcreate = 'Create Account Anyway';
-                }else{
+                } else {
                     this.labelcreate = 'Create Account';
                 }
 
@@ -122,6 +126,7 @@ export default class CreateRecord extends LightningElement {
         createRecord(recordInput)
             .then(account => {
                 this.accountId = account.id;
+                this.navigateid = this.accountId;
                 this.dispatchEvent(
                     new ShowToastEvent({
                         title: 'Success',
@@ -355,5 +360,19 @@ export default class CreateRecord extends LightningElement {
         } else if (val === 'Next') {
             this.nextPage();
         }
+    }
+
+    handleAccountView(event) {
+        // Navigate to contact record page
+        /*this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: this.navigateid,
+                objectApiName: 'Account',
+                actionName: 'view',
+            },
+        });*/
+
+        window.open('/lightning/r/Account/'+this.navigateid+'/view', "_blank");
     }
 }
